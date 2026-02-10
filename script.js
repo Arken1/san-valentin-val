@@ -26,7 +26,10 @@ function moveButton() {
     }
 
     const emoji = btnNo.querySelector('.duck-emoji');
-    const oldX = btnNo.offsetLeft;
+    const rect = btnNo.getBoundingClientRect();
+    const oldX = rect.left;
+    const oldY = rect.top;
+
     const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
     const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
 
@@ -43,13 +46,18 @@ function moveButton() {
     btnNo.style.left = `${x}px`;
     btnNo.style.top = `${y}px`;
 
-    createSmoke(oldX, btnNo.offsetTop);
+    createSmoke(oldX, oldY);
 }
 
 // Lógica del botón "Sí"
 btnYes.addEventListener('click', () => {
-    changeScreen('screen-proposal', 'screen-game');
+    changeScreen('screen-proposal', 'screen-gallery');
     playMusic('assets/song1.mp3'); // Perfect - Ed Sheeran
+});
+
+// Botón para iniciar el juego desde la galería
+document.getElementById('btn-start-game').addEventListener('click', () => {
+    changeScreen('screen-gallery', 'screen-game');
     initGameStage();
 });
 
@@ -268,6 +276,49 @@ function createHeart() {
 }
 
 setInterval(createHeart, 300);
+
+// --- CUENTA REGRESIVA ---
+function updateCountdown() {
+    const targetDate = new Date('February 14, 2026 00:00:00').getTime();
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById('days').innerText = days.toString().padStart(2, '0');
+    document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+    document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+    document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+
+    if (distance < 0) {
+        clearInterval(countdownInterval);
+        document.querySelector('.countdown-container h2').innerText = "¡Es San Valentín!";
+    }
+}
+
+const countdownInterval = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// --- SEGUIMIENTO DE OJOS DEL OSO ---
+document.addEventListener('mousemove', (e) => {
+    const pupils = document.querySelectorAll('.pupil');
+    pupils.forEach(pupil => {
+        const rect = pupil.getBoundingClientRect();
+        const eyeX = rect.left + rect.width / 2;
+        const eyeY = rect.top + rect.height / 2;
+
+        const angle = Math.atan2(e.clientY - eyeY, e.clientX - eyeX);
+        const distance = Math.min(3, Math.hypot(e.clientX - eyeX, e.clientY - eyeY) / 10);
+
+        const moveX = Math.cos(angle) * distance;
+        const moveY = Math.sin(angle) * distance;
+
+        pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+});
 
 // --- EFECTO DE HUMO AL CORRER ---
 function createSmoke(x, y) {
