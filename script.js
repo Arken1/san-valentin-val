@@ -20,9 +20,14 @@ btnNo.addEventListener('mouseover', moveButton);
 btnNo.addEventListener('touchstart', moveButton); // Para celular
 
 function moveButton() {
+    if (!btnNo.classList.contains('duck-mode')) {
+        btnNo.innerHTML = '🦆 No';
+        btnNo.classList.add('duck-mode');
+    }
+
     const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
     const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
-    btnNo.style.position = 'absolute';
+    btnNo.style.position = 'fixed'; // Use fixed to ensure it stays in view
     btnNo.style.left = `${x}px`;
     btnNo.style.top = `${y}px`;
 }
@@ -63,35 +68,54 @@ function playRound(playerChoice) {
     const emojis = { piedra: '✊', papel: '✋', tijera: '✌️' };
     const cpuChoice = choices[Math.floor(Math.random() * 3)];
 
-    // Mostrar elecciones
-    document.getElementById('player-choice-display').innerText = emojis[playerChoice];
-    document.getElementById('cpu-choice-display').innerText = emojis[cpuChoice];
+    // Añadir efecto de sacudida
+    const playerDisplay = document.getElementById('player-choice-display');
+    const cpuDisplay = document.getElementById('cpu-choice-display');
+    playerDisplay.classList.add('shake');
+    cpuDisplay.classList.add('shake');
+    playerDisplay.innerText = '✊';
+    cpuDisplay.innerText = '✊';
 
     // Ocultar controles para que no spamee click
     document.getElementById('game-controls').classList.add('hidden');
-    document.getElementById('round-result').classList.remove('hidden');
 
-    // Determinar ganador
-    if (playerChoice === cpuChoice) {
-        document.getElementById('result-message').innerText = "¡Empate! Intenta de nuevo.";
-        setTimeout(() => {
-            document.getElementById('game-controls').classList.remove('hidden');
-            document.getElementById('round-result').classList.add('hidden');
-        }, 1500);
-        return;
-    }
+    setTimeout(() => {
+        playerDisplay.classList.remove('shake');
+        cpuDisplay.classList.remove('shake');
 
-    const winConditions = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
-    
-    if (winConditions[playerChoice] === cpuChoice) {
-        // ELLA GANA
-        document.getElementById('result-message').innerText = "¡Ganaste! Tú eliges 😎";
-        showWinnerOptions();
-    } else {
-        // ELLA PIERDE
-        document.getElementById('result-message').innerText = "¡Gané yo! 😈";
-        showLoserOptions();
-    }
+        // Mostrar elecciones
+        playerDisplay.innerText = emojis[playerChoice];
+        cpuDisplay.innerText = emojis[cpuChoice];
+
+        document.getElementById('round-result').classList.remove('hidden');
+
+        // Determinar ganador
+        if (playerChoice === cpuChoice) {
+            document.getElementById('result-message').innerText = "¡Empate! Intenta de nuevo.";
+            setTimeout(() => {
+                document.getElementById('game-controls').classList.remove('hidden');
+                document.getElementById('round-result').classList.add('hidden');
+            }, 1500);
+            return;
+        }
+
+        const winConditions = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
+
+        if (winConditions[playerChoice] === cpuChoice) {
+            // ELLA GANA
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            document.getElementById('result-message').innerText = "¡Ganaste! Tú eliges 😎";
+            showWinnerOptions();
+        } else {
+            // ELLA PIERDE
+            document.getElementById('result-message').innerText = "¡Gané yo! 😈";
+            showLoserOptions();
+        }
+    }, 1000);
 }
 
 // -- Si ella gana --
@@ -162,6 +186,29 @@ function showFinalResult() {
     changeScreen('screen-game', 'screen-final');
     playMusic('assets/song3.mp3'); // Tití me preguntó
 
+    // Confetti masivo
+    var end = Date.now() + (3 * 1000);
+    (function frame() {
+        confetti({
+            particleCount: 2,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#ff4d6d', '#ffffff']
+        });
+        confetti({
+            particleCount: 2,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#ff4d6d', '#ffffff']
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    }());
+
     const list = document.getElementById('final-summary');
     finalChoices.forEach(item => {
         const li = document.createElement('li');
@@ -189,3 +236,21 @@ function playMusic(src) {
     audioPlayer.src = src;
     audioPlayer.play().catch(e => console.log("Chrome requiere interacción para reproducir audio"));
 }
+
+// --- ANIMACIÓN DE CORAZONES ---
+function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.innerHTML = '❤️';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+    heart.style.opacity = Math.random();
+    heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 5000);
+}
+
+setInterval(createHeart, 300);
