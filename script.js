@@ -19,10 +19,13 @@ const btnYes = document.getElementById('btn-yes');
 btnNo.addEventListener('mouseover', moveButton);
 btnNo.addEventListener('touchstart', moveButton); // Para celular
 
+const funnyPhrases = ["¡Casi!", "¡Nop!", "🦆💨", "¡Atrapame!", "¡Intenta de nuevo!", "¡Jeje!", "¡No no no!", "🦆"];
+
 function moveButton() {
     if (!btnNo.classList.contains('duck-mode')) {
         btnNo.innerHTML = '<span class="duck-emoji">🦆</span> No';
         btnNo.classList.add('duck-mode');
+        btnNo.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     }
 
     const emoji = btnNo.querySelector('.duck-emoji');
@@ -30,6 +33,7 @@ function moveButton() {
     const oldX = rect.left;
     const oldY = rect.top;
 
+    // Calcular nueva posición
     const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
     const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
 
@@ -47,12 +51,33 @@ function moveButton() {
     btnNo.style.top = `${y}px`;
 
     createSmoke(oldX, oldY);
+    showFloatingText(oldX, oldY);
+}
+
+function showFloatingText(x, y) {
+    const text = document.createElement('div');
+    text.className = 'floating-text';
+    text.innerText = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
+    text.style.left = x + 'px';
+    text.style.top = y + 'px';
+    text.style.position = 'fixed';
+    text.style.pointerEvents = 'none';
+    text.style.color = 'var(--dark)';
+    text.style.fontWeight = 'bold';
+    text.style.fontSize = '1.2rem';
+    text.style.zIndex = '1000';
+    text.style.animation = 'disappear 1s forwards';
+    document.body.appendChild(text);
+    setTimeout(() => text.remove(), 1000);
 }
 
 // Lógica del botón "Sí"
 btnYes.addEventListener('click', () => {
-    changeScreen('screen-proposal', 'screen-gallery');
-    playMusic('assets/song1.mp3'); // Perfect - Ed Sheeran
+    heartBurst();
+    setTimeout(() => {
+        changeScreen('screen-proposal', 'screen-gallery');
+        playMusic('assets/song1.mp3'); // Perfect - Ed Sheeran
+    }, 500);
 });
 
 // Botón para iniciar el juego desde la galería
@@ -123,6 +148,10 @@ function playRound(playerChoice) {
 
         const winConditions = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
 
+        const malamute = document.getElementById('malamute-game');
+        const pinscher = document.getElementById('pinscher-game');
+        const runner = document.querySelector('.pinscher-runner');
+
         if (winConditions[playerChoice] === cpuChoice) {
             // ELLA GANA
             confetti({
@@ -131,10 +160,22 @@ function playRound(playerChoice) {
                 origin: { y: 0.6 }
             });
             document.getElementById('result-message').innerText = "¡Ganaste! Tú eliges 😎";
+            malamute.classList.add('happy');
+            malamute.classList.add('howl');
+            setTimeout(() => {
+                malamute.classList.remove('happy');
+                malamute.classList.remove('howl');
+            }, 3000);
             showWinnerOptions();
         } else {
             // ELLA PIERDE
             document.getElementById('result-message').innerText = "¡Gané yo! 😈";
+            pinscher.classList.add('excited');
+            if (runner) runner.classList.add('excited');
+            setTimeout(() => {
+                pinscher.classList.remove('excited');
+                if (runner) runner.classList.remove('excited');
+            }, 3000);
             showLoserOptions();
         }
     }, 1000);
@@ -260,14 +301,30 @@ function playMusic(src) {
 }
 
 // --- ANIMACIÓN DE CORAZONES ---
-function createHeart() {
+const heartStyles = ['❤️', '💖', '💗', '💓', '✨', '🌸'];
+
+function createHeart(x = null, y = null, isBurst = false) {
     const heart = document.createElement('div');
     heart.classList.add('heart');
-    heart.innerHTML = '❤️';
-    heart.style.left = Math.random() * 100 + 'vw';
+    heart.innerHTML = heartStyles[Math.floor(Math.random() * heartStyles.length)];
+
+    if (x !== null && y !== null) {
+        heart.style.left = x + 'px';
+        heart.style.top = y + 'px';
+        if (isBurst) {
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = 5 + Math.random() * 10;
+            heart.style.setProperty('--tx', Math.cos(angle) * velocity * 20 + 'px');
+            heart.style.setProperty('--ty', Math.sin(angle) * velocity * 20 + 'px');
+            heart.classList.add('burst-heart');
+        }
+    } else {
+        heart.style.left = Math.random() * 100 + 'vw';
+    }
+
     heart.style.animationDuration = Math.random() * 2 + 3 + 's';
     heart.style.opacity = Math.random();
-    heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+    heart.style.fontSize = Math.random() * 20 + 15 + 'px';
     document.body.appendChild(heart);
 
     setTimeout(() => {
@@ -275,7 +332,17 @@ function createHeart() {
     }, 5000);
 }
 
-setInterval(createHeart, 300);
+function heartBurst() {
+    const rect = btnYes.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    for (let i = 0; i < 50; i++) {
+        createHeart(centerX, centerY, true);
+    }
+}
+
+setInterval(() => createHeart(), 300);
 
 // --- CUENTA REGRESIVA ---
 function updateCountdown() {
