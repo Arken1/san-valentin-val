@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Valentina ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <section id="screen-proposal" class="active">
+        <div class="content">
+            <h1 class="heart-beat">Valentina, Hola Cosi ❤️</h1>
+            <div class="photo-container">
+                <img src="assets/1.jpg" alt="Nosotros">
+            </div>
+            <h2>¿Quieres ser mi date de San Valentín?</h2>
+            <div class="buttons">
+                <button id="btn-yes">¡Sí, obvio!</button>
+                <button id="btn-no">No</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-game" class="hidden">
+        <div class="game-header">
+            <h2 id="stage-title">Decidiendo: La Entrada</h2>
+            <p>¡Gáname en Piedra, Papel o Tijera para elegir!</p>
+        </div>
+
+        <div class="game-area">
+            <div class="player-zone">
+                <p>Valentina</p>
+                <div class="choice-display" id="player-choice-display">❓</div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="player-zone">
+                <p>Cosi (CPU)</p>
+                <div class="choice-display" id="cpu-choice-display">❓</div>
+            </div>
+        </div>
+
+        <div id="game-controls">
+            <button class="rps-btn" data-choice="piedra">✊ Piedra</button>
+            <button class="rps-btn" data-choice="papel">✋ Papel</button>
+            <button class="rps-btn" data-choice="tijera">✌️ Tijera</button>
+        </div>
+
+        <div id="round-result" class="hidden">
+            <h3 id="result-message"></h3>
+            
+            <div id="winner-selection" class="hidden">
+                <p>¡Ganaste! Elige tu favorito:</p>
+                <div id="options-container"></div>
+                <input type="text" id="custom-option" placeholder="O escribe otra cosa...">
+                <button id="confirm-selection">Confirmar Elección</button>
+            </div>
+
+            <div id="loser-selection" class="hidden">
+                <p>¡Gané yo! La casa invita:</p>
+                <div class="cpu-pick" id="cpu-pick-text"></div>
+                <button id="btn-rematch">¡Revanche!</button>
+                <button id="btn-accept">Acepto mi destino</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-final" class="hidden">
+        <h1>¡Cita Agendada! ❤️</h1>
+        <div class="ticket">
+            <h2>Ticket de San Valentín</h2>
+            <img src="assets/3.jpg" class="final-photo" alt="Final">
+            <ul id="final-summary">
+                </ul>
+            <p class="love-note">Te amo Valentina. Nos vemos el 14.</p>
+        </div>
+    </section>
+
+    <audio id="audio-player" loop></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
