@@ -425,6 +425,198 @@ button:active { transform: scale(0.95); }
     }
 }
 
+/* --- BACKGROUND DOGS --- */
+.dog-background {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* MALAMUTE (White, Sitting) */
+.malamute {
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    width: 80px;
+    height: 110px;
+}
+
+.malamute .body {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    width: 60px;
+    height: 75px;
+    background: #ffffff;
+    border-radius: 30px 30px 15px 15px;
+    border: 2px solid #ccc;
+    box-shadow: inset -5px 0 10px #eee;
+}
+
+.malamute .face {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 70px;
+    height: 60px;
+    background: #ffffff;
+    border-radius: 50% 50% 45% 45%;
+    border: 2px solid #ccc;
+    z-index: 3;
+}
+
+.malamute .ear {
+    position: absolute;
+    width: 20px;
+    height: 30px;
+    background: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 50% 50% 10% 10%;
+    z-index: 1;
+}
+.malamute .ear.left { top: -5px; left: 10px; transform: rotate(-15deg); }
+.malamute .ear.right { top: -5px; right: 10px; transform: rotate(15deg); }
+
+.malamute .eye {
+    position: absolute;
+    top: 15px;
+    width: 5px;
+    height: 5px;
+    background: #333;
+    border-radius: 50%;
+}
+.malamute .eye.left { left: 12px; }
+.malamute .eye.right { right: 12px; }
+
+.malamute .nose {
+    position: absolute;
+    bottom: 10px;
+    left: 22px;
+    width: 6px;
+    height: 4px;
+    background: #000;
+    border-radius: 50%;
+}
+
+.malamute .tail {
+    position: absolute;
+    bottom: 10px;
+    right: -5px;
+    width: 35px;
+    height: 20px;
+    background: #ffffff;
+    border-radius: 50%;
+    transform: rotate(-30deg);
+    border: 2px solid #ccc;
+    z-index: 0;
+}
+
+/* PINSCHER (Grey, Running) */
+.pinscher-runner {
+    position: absolute;
+    bottom: 0;
+    width: 100px;
+    height: 80px;
+    animation: run-across 8s linear infinite;
+}
+
+.pinscher {
+    position: relative;
+    width: 60px;
+    height: 50px;
+}
+
+.pinscher .body {
+    position: absolute;
+    bottom: 10px;
+    width: 45px;
+    height: 25px;
+    background: #888;
+    border-radius: 15px;
+    border: 1px solid #666;
+}
+
+.pinscher .face {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 25px;
+    background: #888;
+    border-radius: 15px 15px 5px 15px;
+    border: 1px solid #666;
+    z-index: 2;
+}
+
+.pinscher .ear {
+    position: absolute;
+    width: 8px;
+    height: 15px;
+    background: #888;
+    border: 1px solid #666;
+    border-radius: 50% 50% 0 0;
+}
+.pinscher .ear.left { top: -10px; left: 5px; transform: rotate(-5deg); }
+.pinscher .ear.right { top: -10px; left: 15px; transform: rotate(5deg); }
+
+.pinscher .eye {
+    position: absolute;
+    top: 8px;
+    right: 5px;
+    width: 3px;
+    height: 3px;
+    background: #000;
+    border-radius: 50%;
+}
+
+.pinscher .nose {
+    position: absolute;
+    bottom: 8px;
+    right: -2px;
+    width: 4px;
+    height: 3px;
+    background: #000;
+    border-radius: 50%;
+}
+
+.pinscher .leg-front, .pinscher .leg-back {
+    position: absolute;
+    bottom: -10px;
+    width: 4px;
+    height: 12px;
+    background: #888;
+    border: 1px solid #666;
+    animation: dog-leg 0.2s infinite alternate;
+}
+.pinscher .leg-front { left: 10px; }
+.pinscher .leg-back { right: 10px; animation-delay: 0.1s; }
+
+.pinscher .tail {
+    position: absolute;
+    bottom: 15px;
+    left: -5px;
+    width: 10px;
+    height: 4px;
+    background: #888;
+    border-radius: 50%;
+    transform: rotate(20deg);
+}
+
+@keyframes run-across {
+    from { transform: translateX(-150px); }
+    to { transform: translateX(calc(100vw + 150px)); }
+}
+
+@keyframes dog-leg {
+    from { transform: rotate(-20deg); }
+    to { transform: rotate(20deg); }
+}
+
 /* --- EL PATO QUE HUYE --- */
 .duck-mode {
     background: transparent !important;
@@ -504,4 +696,37 @@ button:hover {
 @keyframes disappear {
     from { opacity: 1; transform: scale(1) translateY(0); }
     to { opacity: 0; transform: scale(2) translateY(-20px); }
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 600px) {
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1rem; }
+
+    .bear-container {
+        height: 200px;
+        transform: scale(0.85);
+    }
+
+    .gallery-item img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .time-block span {
+        font-size: 1.2rem;
+    }
+
+    .game-area {
+        font-size: 2rem;
+    }
+
+    .rps-btn {
+        font-size: 1.2rem;
+        padding: 10px 15px;
+    }
+
+    section {
+        padding: 10px;
+    }
 }
