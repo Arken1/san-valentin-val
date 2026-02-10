@@ -19,18 +19,70 @@ const btnYes = document.getElementById('btn-yes');
 btnNo.addEventListener('mouseover', moveButton);
 btnNo.addEventListener('touchstart', moveButton); // Para celular
 
+const funnyPhrases = ["¡Casi!", "¡Nop!", "🦆💨", "¡Atrapame!", "¡Intenta de nuevo!", "¡Jeje!", "¡No no no!", "🦆", "¡QUACK!", "🦆💨💨"];
+
 function moveButton() {
+    if (!btnNo.classList.contains('duck-mode')) {
+        btnNo.innerHTML = '<span class="duck-emoji">🦆</span> No';
+        btnNo.classList.add('duck-mode');
+        btnNo.style.transition = 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    }
+
+    const emoji = btnNo.querySelector('.duck-emoji');
+    const rect = btnNo.getBoundingClientRect();
+    const oldX = rect.left;
+    const oldY = rect.top;
+
+    // Calcular nueva posición
     const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
     const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
-    btnNo.style.position = 'absolute';
+
+    // Girar el pato según la dirección
+    if (x < oldX) {
+        emoji.style.display = 'inline-block';
+        emoji.style.transform = 'scaleX(-1)';
+    } else {
+        emoji.style.display = 'inline-block';
+        emoji.style.transform = 'scaleX(1)';
+    }
+
+    btnNo.style.position = 'fixed';
     btnNo.style.left = `${x}px`;
     btnNo.style.top = `${y}px`;
+
+    createSmoke(oldX, oldY);
+    showFloatingText(oldX, oldY);
+}
+
+function showFloatingText(x, y) {
+    const text = document.createElement('div');
+    text.className = 'floating-text';
+    text.innerText = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
+    text.style.left = x + 'px';
+    text.style.top = y + 'px';
+    text.style.position = 'fixed';
+    text.style.pointerEvents = 'none';
+    text.style.color = 'var(--dark)';
+    text.style.fontWeight = 'bold';
+    text.style.fontSize = '1.2rem';
+    text.style.zIndex = '1000';
+    text.style.animation = 'disappear 1s forwards';
+    document.body.appendChild(text);
+    setTimeout(() => text.remove(), 1000);
 }
 
 // Lógica del botón "Sí"
 btnYes.addEventListener('click', () => {
-    changeScreen('screen-proposal', 'screen-game');
-    playMusic('assets/song1.mp3'); // Perfect - Ed Sheeran
+    heartBurst();
+    setTimeout(() => {
+        changeScreen('screen-proposal', 'screen-gallery');
+        playMusic('assets/song1.mp3'); // Perfect - Ed Sheeran
+    }, 500);
+});
+
+// Botón para iniciar el juego desde la galería
+document.getElementById('btn-start-game').addEventListener('click', () => {
+    changeScreen('screen-gallery', 'screen-game');
     initGameStage();
 });
 
@@ -63,35 +115,74 @@ function playRound(playerChoice) {
     const emojis = { piedra: '✊', papel: '✋', tijera: '✌️' };
     const cpuChoice = choices[Math.floor(Math.random() * 3)];
 
-    // Mostrar elecciones
-    document.getElementById('player-choice-display').innerText = emojis[playerChoice];
-    document.getElementById('cpu-choice-display').innerText = emojis[cpuChoice];
+    // Añadir efecto de sacudida
+    const playerDisplay = document.getElementById('player-choice-display');
+    const cpuDisplay = document.getElementById('cpu-choice-display');
+    playerDisplay.classList.add('shake');
+    cpuDisplay.classList.add('shake');
+    playerDisplay.innerText = '✊';
+    cpuDisplay.innerText = '✊';
 
     // Ocultar controles para que no spamee click
     document.getElementById('game-controls').classList.add('hidden');
-    document.getElementById('round-result').classList.remove('hidden');
 
-    // Determinar ganador
-    if (playerChoice === cpuChoice) {
-        document.getElementById('result-message').innerText = "¡Empate! Intenta de nuevo.";
-        setTimeout(() => {
-            document.getElementById('game-controls').classList.remove('hidden');
-            document.getElementById('round-result').classList.add('hidden');
-        }, 1500);
-        return;
-    }
+    setTimeout(() => {
+        playerDisplay.classList.remove('shake');
+        cpuDisplay.classList.remove('shake');
 
-    const winConditions = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
-    
-    if (winConditions[playerChoice] === cpuChoice) {
-        // ELLA GANA
-        document.getElementById('result-message').innerText = "¡Ganaste! Tú eliges 😎";
-        showWinnerOptions();
-    } else {
-        // ELLA PIERDE
-        document.getElementById('result-message').innerText = "¡Gané yo! 😈";
-        showLoserOptions();
-    }
+        // Mostrar elecciones
+        playerDisplay.innerText = emojis[playerChoice];
+        cpuDisplay.innerText = emojis[cpuChoice];
+
+        document.getElementById('round-result').classList.remove('hidden');
+
+        // Determinar ganador
+        if (playerChoice === cpuChoice) {
+            document.getElementById('result-message').innerText = "¡Empate! Intenta de nuevo.";
+            setTimeout(() => {
+                document.getElementById('game-controls').classList.remove('hidden');
+                document.getElementById('round-result').classList.add('hidden');
+            }, 1500);
+            return;
+        }
+
+        const winConditions = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
+
+        const malamute = document.getElementById('malamute-game');
+        const pinscher = document.getElementById('pinscher-game');
+        const runner = document.querySelector('.pinscher-runner');
+
+        if (winConditions[playerChoice] === cpuChoice) {
+            // ELLA GANA
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            document.getElementById('result-message').innerText = "¡Ganaste! Tú eliges 😎";
+            malamute.classList.add('victory', 'happy', 'howl');
+            pinscher.classList.add('defeat');
+
+            setTimeout(() => {
+                malamute.classList.remove('victory', 'happy', 'howl');
+                pinscher.classList.remove('defeat');
+            }, 3000);
+            showWinnerOptions();
+        } else {
+            // ELLA PIERDE
+            document.getElementById('result-message').innerText = "¡Gané yo! 😈";
+            pinscher.classList.add('victory');
+            malamute.classList.add('defeat');
+
+            if (runner) runner.classList.add('excited');
+            setTimeout(() => {
+                pinscher.classList.remove('victory');
+                malamute.classList.remove('defeat');
+                if (runner) runner.classList.remove('excited');
+            }, 3000);
+            showLoserOptions();
+        }
+    }, 1000);
 }
 
 // -- Si ella gana --
@@ -162,6 +253,29 @@ function showFinalResult() {
     changeScreen('screen-game', 'screen-final');
     playMusic('assets/song3.mp3'); // Tití me preguntó
 
+    // Confetti masivo
+    var end = Date.now() + (3 * 1000);
+    (function frame() {
+        confetti({
+            particleCount: 2,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#ff4d6d', '#ffffff']
+        });
+        confetti({
+            particleCount: 2,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#ff4d6d', '#ffffff']
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    }());
+
     const list = document.getElementById('final-summary');
     finalChoices.forEach(item => {
         const li = document.createElement('li');
@@ -189,3 +303,117 @@ function playMusic(src) {
     audioPlayer.src = src;
     audioPlayer.play().catch(e => console.log("Chrome requiere interacción para reproducir audio"));
 }
+
+// --- ANIMACIÓN DE CORAZONES ---
+const heartStyles = ['❤️', '💖', '💗', '💓', '✨', '🌸'];
+
+function createHeart(x = null, y = null, isBurst = false) {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.innerHTML = heartStyles[Math.floor(Math.random() * heartStyles.length)];
+
+    if (x !== null && y !== null) {
+        heart.style.left = x + 'px';
+        heart.style.top = y + 'px';
+        if (isBurst) {
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = 5 + Math.random() * 10;
+            heart.style.setProperty('--tx', Math.cos(angle) * velocity * 20 + 'px');
+            heart.style.setProperty('--ty', Math.sin(angle) * velocity * 20 + 'px');
+            heart.classList.add('burst-heart');
+        }
+    } else {
+        heart.style.left = Math.random() * 100 + 'vw';
+    }
+
+    heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+    heart.style.opacity = Math.random();
+    heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 5000);
+}
+
+function heartBurst() {
+    const rect = btnYes.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    for (let i = 0; i < 50; i++) {
+        createHeart(centerX, centerY, true);
+    }
+}
+
+setInterval(() => createHeart(), 300);
+
+// --- CUENTA REGRESIVA ---
+function updateCountdown() {
+    const targetDate = new Date('February 14, 2026 00:00:00').getTime();
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById('days').innerText = days.toString().padStart(2, '0');
+    document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+    document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+    document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+
+    if (distance < 0) {
+        clearInterval(countdownInterval);
+        document.querySelector('.countdown-container h2').innerText = "¡Es San Valentín!";
+    }
+}
+
+const countdownInterval = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// --- SEGUIMIENTO DE OJOS DEL OSO ---
+document.addEventListener('mousemove', (e) => {
+    const pupils = document.querySelectorAll('.pupil');
+    pupils.forEach(pupil => {
+        const rect = pupil.getBoundingClientRect();
+        const eyeX = rect.left + rect.width / 2;
+        const eyeY = rect.top + rect.height / 2;
+
+        const angle = Math.atan2(e.clientY - eyeY, e.clientX - eyeX);
+        const distance = Math.min(3, Math.hypot(e.clientX - eyeX, e.clientY - eyeY) / 10);
+
+        const moveX = Math.cos(angle) * distance;
+        const moveY = Math.sin(angle) * distance;
+
+        pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+});
+
+// --- EFECTO DE HUMO AL CORRER ---
+function createSmoke(x, y) {
+    const smoke = document.createElement('div');
+    smoke.classList.add('smoke');
+    smoke.innerHTML = '💨';
+    smoke.style.left = x + 'px';
+    smoke.style.top = y + 'px';
+    document.body.appendChild(smoke);
+
+    setTimeout(() => {
+        smoke.remove();
+    }, 500);
+}
+
+// --- EXPLOSIÓN INICIAL ---
+function initialHeartExplosion() {
+    for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createHeart(x, y, true);
+        }, i * 20);
+    }
+}
+
+window.addEventListener('load', initialHeartExplosion);
