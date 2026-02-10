@@ -182,18 +182,19 @@ button:active { transform: scale(0.95); }
     background: transparent !important;
     color: var(--text) !important;
     box-shadow: none !important;
-    font-size: 2.5rem !important;
+    font-size: 3rem !important;
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: waddle 0.3s infinite alternate ease-in-out;
+    animation: waddle 0.15s infinite alternate ease-in-out;
     pointer-events: auto;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1); /* Transición para que "corra" */
 }
 
 @keyframes waddle {
-    from { transform: rotate(-5deg) translateY(0); }
-    to { transform: rotate(5deg) translateY(-5px); }
+    from { transform: rotate(-15deg) scale(1); }
+    to { transform: rotate(15deg) scale(1.1) translateY(-10px); }
 }
 
 /* --- ANIMACIONES DE JUEGO --- */
@@ -242,4 +243,17 @@ button:hover {
 .option-btn.selected {
     transform: scale(1.05);
     border: 2px solid var(--dark);
+}
+
+.smoke {
+    position: fixed;
+    z-index: 999;
+    pointer-events: none;
+    font-size: 2rem;
+    animation: disappear 0.5s forwards;
+}
+
+@keyframes disappear {
+    from { opacity: 1; transform: scale(1) translateY(0); }
+    to { opacity: 0; transform: scale(2) translateY(-20px); }
 }

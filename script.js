@@ -21,15 +21,29 @@ btnNo.addEventListener('touchstart', moveButton); // Para celular
 
 function moveButton() {
     if (!btnNo.classList.contains('duck-mode')) {
-        btnNo.innerHTML = '🦆 No';
+        btnNo.innerHTML = '<span class="duck-emoji">🦆</span> No';
         btnNo.classList.add('duck-mode');
     }
 
+    const emoji = btnNo.querySelector('.duck-emoji');
+    const oldX = btnNo.offsetLeft;
     const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
     const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
-    btnNo.style.position = 'fixed'; // Use fixed to ensure it stays in view
+
+    // Girar el pato según la dirección
+    if (x < oldX) {
+        emoji.style.display = 'inline-block';
+        emoji.style.transform = 'scaleX(-1)';
+    } else {
+        emoji.style.display = 'inline-block';
+        emoji.style.transform = 'scaleX(1)';
+    }
+
+    btnNo.style.position = 'fixed';
     btnNo.style.left = `${x}px`;
     btnNo.style.top = `${y}px`;
+
+    createSmoke(oldX, btnNo.offsetTop);
 }
 
 // Lógica del botón "Sí"
@@ -254,3 +268,17 @@ function createHeart() {
 }
 
 setInterval(createHeart, 300);
+
+// --- EFECTO DE HUMO AL CORRER ---
+function createSmoke(x, y) {
+    const smoke = document.createElement('div');
+    smoke.classList.add('smoke');
+    smoke.innerHTML = '💨';
+    smoke.style.left = x + 'px';
+    smoke.style.top = y + 'px';
+    document.body.appendChild(smoke);
+
+    setTimeout(() => {
+        smoke.remove();
+    }, 500);
+}
