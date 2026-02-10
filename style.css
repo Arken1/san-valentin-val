@@ -428,6 +428,18 @@ button:active { transform: scale(0.95); }
     to { transform: scale(1.1); }
 }
 
+@keyframes bear-wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-2deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(2deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.bear {
+    animation: bear-wiggle 3s infinite ease-in-out;
+}
+
 /* --- CORAZONES CAYENDO --- */
 .heart {
     position: fixed;
@@ -496,9 +508,10 @@ button:active { transform: scale(0.95); }
     left: -2px;
     width: 64px;
     height: 15px;
-    background: #d90429;
+    background: #0077b6; /* Blue scarf like in the image */
     border-radius: 5px;
     z-index: 4;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .malamute .face {
@@ -559,13 +572,13 @@ button:active { transform: scale(0.95); }
     z-index: 0;
 }
 
-/* PINSCHER (Grey, Running) */
+/* PINSCHER (Black/Tan, Running) */
 .pinscher-runner {
     position: absolute;
     bottom: 0;
     width: 100px;
     height: 80px;
-    animation: run-across 8s linear infinite;
+    animation: run-across 6s linear infinite; /* Slightly faster */
 }
 
 .pinscher {
@@ -579,28 +592,29 @@ button:active { transform: scale(0.95); }
     bottom: 10px;
     width: 45px;
     height: 25px;
-    background: #888;
+    background: #d4a373; /* Tan base */
     border-radius: 15px;
-    border: 1px solid #666;
+    border: 1px solid #a47148;
 }
 
-/* Security Vest */
+/* Security Vest - Black Sweater */
 .pinscher .body::after {
     content: 'SECURITY';
     position: absolute;
-    top: 2px;
-    left: 5px;
-    width: 35px;
-    height: 15px;
-    background: #222;
-    color: white;
-    font-size: 5px;
+    top: -2px;
+    left: -2px;
+    width: 49px;
+    height: 20px;
+    background: #1a1a1a;
+    color: #ffde59;
+    font-size: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 3px;
-    font-family: sans-serif;
+    border-radius: 5px;
+    font-family: 'Arial Black', sans-serif;
     font-weight: bold;
+    border: 1px solid #000;
 }
 
 .pinscher .face {
@@ -609,18 +623,30 @@ button:active { transform: scale(0.95); }
     right: -10px;
     width: 30px;
     height: 25px;
-    background: #888;
+    background: #1a1a1a; /* Black face top */
     border-radius: 15px 15px 5px 15px;
-    border: 1px solid #666;
+    border: 1px solid #000;
     z-index: 2;
+    overflow: hidden;
+}
+
+/* Tan muzzle */
+.pinscher .face::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background: #d4a373;
 }
 
 .pinscher .ear {
     position: absolute;
     width: 8px;
     height: 15px;
-    background: #888;
-    border: 1px solid #666;
+    background: #1a1a1a;
+    border: 1px solid #000;
     border-radius: 50% 50% 0 0;
 }
 .pinscher .ear.left { top: -10px; left: 5px; transform: rotate(-5deg); }
@@ -651,8 +677,8 @@ button:active { transform: scale(0.95); }
     bottom: -10px;
     width: 4px;
     height: 12px;
-    background: #888;
-    border: 1px solid #666;
+    background: #d4a373;
+    border: 1px solid #a47148;
     animation: dog-leg 0.2s infinite alternate;
 }
 .pinscher .leg-front { left: 10px; }
@@ -664,7 +690,7 @@ button:active { transform: scale(0.95); }
     left: -5px;
     width: 10px;
     height: 4px;
-    background: #888;
+    background: #1a1a1a;
     border-radius: 50%;
     transform: rotate(20deg);
 }
@@ -699,6 +725,33 @@ button:active { transform: scale(0.95); }
 .malamute.howl .face { animation: howl 1s infinite; }
 .pinscher-runner.excited { animation: security-jump 0.5s infinite; }
 
+@keyframes victory-jump {
+    0%, 100% { transform: translateY(0) scale(0.6); }
+    50% { transform: translateY(-40px) scale(0.7); }
+}
+
+@keyframes defeat-shake {
+    0%, 100% { transform: translateX(0) scale(0.6); }
+    25% { transform: translateX(-5px) rotate(-5deg) scale(0.6); }
+    75% { transform: translateX(5px) rotate(5deg) scale(0.6); }
+}
+
+@keyframes pinscher-victory {
+    0%, 100% { transform: scale(0.8) scaleX(-1) translateY(0); }
+    50% { transform: scale(0.9) scaleX(-1) translateY(-30px); }
+}
+
+@keyframes pinscher-defeat {
+    0%, 100% { transform: scale(0.8) scaleX(-1) translateX(0); }
+    25% { transform: scale(0.8) scaleX(-1) translateX(-5px) rotate(-5deg); }
+    75% { transform: scale(0.8) scaleX(-1) translateX(5px) rotate(5deg); }
+}
+
+.malamute.victory { animation: victory-jump 0.5s infinite; }
+.malamute.defeat { animation: defeat-shake 0.3s infinite; }
+.pinscher.victory { animation: pinscher-victory 0.5s infinite; }
+.pinscher.defeat { animation: pinscher-defeat 0.3s infinite; }
+
 /* --- EL PATO QUE HUYE --- */
 .duck-mode {
     background: transparent !important;
@@ -709,14 +762,15 @@ button:active { transform: scale(0.95); }
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: waddle 0.15s infinite alternate ease-in-out;
+    animation: waddle 0.1s infinite ease-in-out;
     pointer-events: auto;
-    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1); /* Transición para que "corra" */
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1); /* Transición para que "corra" */
 }
 
 @keyframes waddle {
-    from { transform: rotate(-15deg) scale(1); }
-    to { transform: rotate(15deg) scale(1.1) translateY(-10px); }
+    0% { transform: rotate(-20deg) scale(1); }
+    50% { transform: rotate(20deg) scale(1.3) translateY(-20px); }
+    100% { transform: rotate(-20deg) scale(1); }
 }
 
 /* --- ANIMACIONES DE JUEGO --- */

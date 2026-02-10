@@ -19,13 +19,13 @@ const btnYes = document.getElementById('btn-yes');
 btnNo.addEventListener('mouseover', moveButton);
 btnNo.addEventListener('touchstart', moveButton); // Para celular
 
-const funnyPhrases = ["¡Casi!", "¡Nop!", "🦆💨", "¡Atrapame!", "¡Intenta de nuevo!", "¡Jeje!", "¡No no no!", "🦆"];
+const funnyPhrases = ["¡Casi!", "¡Nop!", "🦆💨", "¡Atrapame!", "¡Intenta de nuevo!", "¡Jeje!", "¡No no no!", "🦆", "¡QUACK!", "🦆💨💨"];
 
 function moveButton() {
     if (!btnNo.classList.contains('duck-mode')) {
         btnNo.innerHTML = '<span class="duck-emoji">🦆</span> No';
         btnNo.classList.add('duck-mode');
-        btnNo.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        btnNo.style.transition = 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     }
 
     const emoji = btnNo.querySelector('.duck-emoji');
@@ -160,20 +160,24 @@ function playRound(playerChoice) {
                 origin: { y: 0.6 }
             });
             document.getElementById('result-message').innerText = "¡Ganaste! Tú eliges 😎";
-            malamute.classList.add('happy');
-            malamute.classList.add('howl');
+            malamute.classList.add('victory', 'happy', 'howl');
+            pinscher.classList.add('defeat');
+
             setTimeout(() => {
-                malamute.classList.remove('happy');
-                malamute.classList.remove('howl');
+                malamute.classList.remove('victory', 'happy', 'howl');
+                pinscher.classList.remove('defeat');
             }, 3000);
             showWinnerOptions();
         } else {
             // ELLA PIERDE
             document.getElementById('result-message').innerText = "¡Gané yo! 😈";
-            pinscher.classList.add('excited');
+            pinscher.classList.add('victory');
+            malamute.classList.add('defeat');
+
             if (runner) runner.classList.add('excited');
             setTimeout(() => {
-                pinscher.classList.remove('excited');
+                pinscher.classList.remove('victory');
+                malamute.classList.remove('defeat');
                 if (runner) runner.classList.remove('excited');
             }, 3000);
             showLoserOptions();
@@ -400,3 +404,16 @@ function createSmoke(x, y) {
         smoke.remove();
     }, 500);
 }
+
+// --- EXPLOSIÓN INICIAL ---
+function initialHeartExplosion() {
+    for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createHeart(x, y, true);
+        }, i * 20);
+    }
+}
+
+window.addEventListener('load', initialHeartExplosion);
