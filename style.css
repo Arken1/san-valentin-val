@@ -1,0 +1,163 @@
+:root {
+    --primary: #ff4d6d;
+    --dark: #c9184a;
+    --light: #fff0f3;
+    --text: #590d22;
+    --font-head: 'Pacifico', cursive;
+    --font-body: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    background-color: var(--light);
+    color: var(--text);
+    overflow-x: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+section {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    position: absolute;
+    transition: opacity 0.5s ease;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+    display: none; /* Helps with layout */
+}
+
+.active {
+    opacity: 1;
+    pointer-events: all;
+    z-index: 10;
+    display: block;
+}
+
+/* --- TEXTO E IMAGENES --- */
+h1 { font-family: var(--font-head); font-size: 2.5rem; color: var(--dark); }
+h2 { font-size: 1.2rem; margin-bottom: 20px; }
+
+.photo-container img, .final-photo {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid var(--primary);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    margin: 20px 0;
+}
+
+/* --- BOTONES --- */
+button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: bold;
+    transition: transform 0.2s;
+    margin: 5px;
+}
+
+#btn-yes, #confirm-selection, #btn-accept {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+}
+
+#btn-no {
+    background-color: #ccc;
+    color: #666;
+    position: relative; /* Importante para moverlo */
+}
+
+#btn-rematch {
+    background-color: var(--dark);
+    color: white;
+}
+
+button:active { transform: scale(0.95); }
+
+/* --- JUEGO --- */
+.game-area {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 30px 0;
+    font-size: 3rem;
+}
+
+.vs { font-family: var(--font-head); color: var(--dark); font-size: 1.5rem; }
+
+.rps-btn {
+    background: white;
+    font-size: 1.5rem;
+    border: 2px solid var(--primary);
+}
+
+#options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.option-btn {
+    background: white;
+    border: 1px solid var(--primary);
+    color: var(--text);
+}
+.option-btn.selected {
+    background: var(--primary);
+    color: white;
+}
+
+#custom-option {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    width: 80%;
+    margin-bottom: 10px;
+}
+
+/* --- TICKET FINAL --- */
+.ticket {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    border: 2px dashed var(--primary);
+}
+
+#final-summary {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+#final-summary li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#final-summary strong { color: var(--dark); }
+
+/* --- ANIMACIONES --- */
+.heart-beat { animation: beat 1s infinite alternate; }
+
+@keyframes beat {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
