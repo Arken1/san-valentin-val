@@ -502,7 +502,7 @@ button:active { transform: scale(0.95); }
     bottom: 0;
     width: 70px;
     height: 105px;
-    animation: run-across 6s linear infinite; /* Slightly faster */
+    animation: run-across 12s linear infinite; /* Slowed down per user request */
 }
 
 .pinscher {
@@ -524,7 +524,7 @@ button:active { transform: scale(0.95); }
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(-30px) scale(1.1); }
 }
-.pinscher-runner.excited { animation: security-jump 0.5s infinite; }
+.pinscher-runner.excited { animation: security-jump 0.8s infinite; }
 
 @keyframes victory-jump {
     0%, 100% { transform: translateY(0) scale(0.6); }
